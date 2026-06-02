@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.back.mapper.WatchHistoryMapper">
+    <!--시청기록 저장-->
+    <insert id="saveHistory">
+        MERGE INTO WATCH_HISTORY_TBL T
+        USING (
+            SELECT
+                #{USER_ID} AS USER_ID,
+                #{MOVIE_ID} AS MOVIE_ID,
+                #{TITLE} AS TITLE,
+                #{POSTER_PATH} AS POSTER_PATH,
+                #{GENRES} AS GENRES
+            FROM DUAL
+        ) S
+        ON (T.USER_ID = S.USER_ID AND T.MOVIE_ID = S.MOVIE_ID)
+
+        WHEN MATCHED THEN
+            UPDATE SET T.WATCH_DATE = SYSDATE
+
+        WHEN NOT MATCHED THEN
+            INSERT (HISTORY_NO, USER_ID, MOVIE_ID, TITLE, POSTER_PATH, GENRES, WATCH_DATE)
+            VALUES (WATCH_HISTORY_SEQ.NEXTVAL, S.USER_ID, S.MOVIE_ID, S.TITLE, S.POSTER_PATH, S.GENRES, SYSDATE)
+    </insert>
+
+    <!--시청기록 목록-->
+    <select id="historyList" resultType="com.example.back.entity.WatchHistoryEntity">
+        SELECT * FROM WATCH_HISTORY_TBL
+        WHERE USER_ID = #{USER_ID}
+        ORDER BY WATCH_DATE DESC
+        OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+    </select>
+
+    <!--시청기록 개수-->
+    <select id="countList" resultType="int">
+        SELECT COUNT(*) FROM WATCH_HISTORY_TBL WHERE USER_ID = #{USER_ID}
+    </select>
+</mapper>
