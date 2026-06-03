@@ -6,8 +6,8 @@
 <mapper namespace="com.example.back.mapper.UserMapper">
     <!--회원가입-->
     <insert id="register">
-        INSERT INTO USER_TBL ( USER_NO, USER_ID, USER_PW, USER_EMAIL, REG_DATE )
-        VALUES ( USER_SEQ.NEXTVAL, #{USER_ID}, #{USER_PW}, #{USER_EMAIL}, SYSDATE )
+        INSERT INTO USER_TBL ( USER_ID, USER_PW, USER_EMAIL )
+        VALUES ( #{USER_ID}, #{USER_PW}, #{USER_EMAIL} )
     </insert>
 
     <!--로그인 회원 검증-->
