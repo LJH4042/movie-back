@@ -39,7 +39,7 @@ public class UserController {
 
             //RefreshToken을 쿠키로 생성
             ResponseCookie insertCookie = ResponseCookie.from("refreshToken", tokens.get("refreshToken"))
-                    .httpOnly(true).path("/") //JS에서 접근 불가 (XSS 방어), 모든 경로에서 쿠키 사용 가능
+                    .httpOnly(true).path("/").secure(true).sameSite("None") //JS에서 접근 불가 (XSS 방어), 모든 경로에서 쿠키 사용 가능
                     .maxAge(7 * 24 * 60 * 60).build(); //7일 동안 유지, 쿠키 객체 생성
 
             return ResponseEntity.ok() //응답 성공
@@ -58,7 +58,7 @@ public class UserController {
         //RefreshToken이 없거나 만료된 경우, 쿠키에 저장된 RefreshToken 삭제
         if (refreshToken == null || !jwtUtil.validateToken(refreshToken)) {
             ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-                    .httpOnly(true).path("/").maxAge(0).build();
+                    .httpOnly(true).secure(true).sameSite("None").path("/").maxAge(0).build();
 
             return ResponseEntity.status(401)
                     .header("Set-Cookie", deleteCookie.toString())
@@ -71,7 +71,7 @@ public class UserController {
         //RefreshToken이 없거나 쿠키-redis의 저장된 RefreshToken이 다를 경우, 쿠키에 저장된 RefreshToken 삭제
         if (savedToken == null || !savedToken.equals(refreshToken)) {
             ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-                    .httpOnly(true).path("/").maxAge(0).build();
+                    .httpOnly(true).secure(true).sameSite("None").path("/").maxAge(0).build();
 
             return ResponseEntity.status(403)
                     .header("Set-Cookie", deleteCookie.toString())
@@ -87,7 +87,7 @@ public class UserController {
 
         //쿠키에 RefreshToken 교체
         ResponseCookie newCookie = ResponseCookie.from("refreshToken", newRefreshToken)
-                .httpOnly(true).path("/").maxAge(7 * 24 * 60 * 60).build();
+                .httpOnly(true).secure(true).sameSite("None").path("/").maxAge(7 * 24 * 60 * 60).build();
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", newCookie.toString())
@@ -104,7 +104,7 @@ public class UserController {
 
         //쿠키에 저장된 refreshToken 삭제
         ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true).path("/").maxAge(0).build();
+                .httpOnly(true).secure(true).sameSite("None").path("/").maxAge(0).build();
 
         return ResponseEntity.ok()
                 .header("Set-Cookie", deleteCookie.toString()).body("로그아웃 완료"); //응답 보냄
