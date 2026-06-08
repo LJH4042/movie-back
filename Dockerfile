@@ -4,6 +4,7 @@ FROM gradle:8.5-jdk21 AS build
 WORKDIR /app
 COPY . .
 
+RUN chmod +x gradlew
 RUN ./gradlew build -x test
 
 # 2️⃣ 실행 단계
