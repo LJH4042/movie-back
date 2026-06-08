@@ -4,7 +4,7 @@ FROM gradle:8.5-jdk21 AS build
 WORKDIR /app
 COPY . .
 
-RUN gradle build
+RUN ./gradlew build
 
 # 2️⃣ 실행 단계
 FROM eclipse-temurin:21-jdk-alpine
