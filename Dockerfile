@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN chmod +x gradlew
-RUN ./gradlew build -x test
+RUN ./gradlew build
 
 # 2️⃣ 실행 단계
 FROM eclipse-temurin:21-jdk-alpine
