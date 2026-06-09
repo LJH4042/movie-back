@@ -1,16 +1,23 @@
-# 1️⃣ 빌드 단계
-FROM gradle:8.5-jdk21 AS build
+#빌드
+FROM eclipse-temurin:21 as builder
 
-WORKDIR /app
-COPY . .
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
+RUN chmod +x ./gradlew
+RUN ./gradlew bootjar
 
-RUN chmod +x gradlew
-RUN ./gradlew build
+#실행
+FROM eclipse-temurin:21 as runtime
 
-# 2️⃣ 실행 단계
-FROM eclipse-temurin:21-jdk-alpine
+RUN addgroup --system --gid 1000 worker
+RUN adduser --system --uid 1000 --ingroup worker --disabled-password worker
+USER worker:worker
 
-WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=builder build/libs/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app.jar"]
