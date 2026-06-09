@@ -12,10 +12,6 @@ RUN ./gradlew bootjar
 #실행
 FROM eclipse-temurin:21 as runtime
 
-RUN addgroup --system --gid 1000 worker
-RUN adduser --system --uid 1000 --ingroup worker --disabled-password worker
-USER worker:worker
-
 COPY --from=builder build/libs/*.jar app.jar
 
 EXPOSE 8080
