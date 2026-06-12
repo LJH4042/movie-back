@@ -48,7 +48,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("https://port-0-movie-front-mq4vopki61ea0a9b.sel3.cloudtype.app")); //cors를 허용할 프론트 주소
+        config.setAllowedOrigins(List.of("https://movie-front.vercel.app")); //cors를 허용할 프론트 주소
 //        config.setAllowedOrigins(List.of("http://localhost:5173")); //cors를 허용할 프론트 주소
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); //cors를 허용할 HTTP 메소드 (모두 허용으로 설정)
         config.setAllowedHeaders(List.of("*")); //cors를 하용할 클라이언트 헤더 (모두 허용으로 설정)
